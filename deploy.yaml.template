@@ -1,0 +1,65 @@
+---
+version: "2.0"
+
+services:
+  postgres:
+    image: ${REGISTRY_IMAGE}
+    env:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - AWS_ENDPOINT=https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=auto
+      - AWS_S3_FORCE_PATH_STYLE=true
+      - WALG_S3_PREFIX=s3://${R2_BUCKET}/postgres
+      - WALG_COMPRESSION_METHOD=brotli
+      - WALG_DELTA_MAX_STEPS=6
+      - WALG_UPLOAD_CONCURRENCY=4
+      - WALG_DOWNLOAD_CONCURRENCY=4
+      - WALG_LIBSODIUM_KEY=${WALG_LIBSODIUM_KEY}
+      - PG_TLS_CERT=${PG_TLS_CERT}
+      - PG_TLS_KEY=${PG_TLS_KEY}
+    expose:
+      - port: 5432
+        as: 5432
+        proto: tcp
+        to:
+          - global: true
+    params:
+      storage:
+        pgdata:
+          mount: /var/lib/postgresql/data
+          readOnly: false
+
+profiles:
+  compute:
+    postgres:
+      resources:
+        cpu:
+          units: ${CPU_UNITS}
+        memory:
+          size: ${MEMORY_SIZE}
+        storage:
+          - size: 2Gi
+          - name: pgdata
+            size: ${STORAGE_SIZE}
+            attributes:
+              persistent: true
+              class: beta3
+  placement:
+    akash:
+      attributes:
+        host: akash
+      pricing:
+        postgres:
+          denom: uact
+          amount: 10000
+
+deployment:
+  postgres:
+    akash:
+      profile: postgres
+      count: 1
