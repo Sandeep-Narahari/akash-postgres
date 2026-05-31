@@ -1,0 +1,14 @@
+# secrets — never bake into image
+config.env
+server.crt
+server.key
+derive-keys.sh
+
+# deploy artifacts
+deploy.yaml
+deploy.yaml.template
+downloaded.txt
+
+# git + docs
+.git
+README.md

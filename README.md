@@ -67,6 +67,8 @@ every day  02:00 UTC  →  wal-g backup-push  (full base backup to R2)
 every Sun  03:00 UTC  →  wal-g delete retain FULL 7  (keep last 7 full backups)
 ```
 
+Schedule configurable via `BACKUP_INTERVAL` env var. Supported values: `10min`, `30min`, `1hour`, `6hour`, `1day` (default), `2day`.
+
 Full backups are needed as a recovery base — WAL alone is not enough to restore.
 The initial full backup is pushed automatically on first start.
 
@@ -148,7 +150,7 @@ This creates `server.crt` and `server.key` locally and auto-updates `config.env`
 - `server.key` — store in a password manager, never share
 
 ---
-
+agents:akash:917
 ### Step 3 — Generate WAL-G encryption key
 
 **Option A — Derived from passphrase (recommended):**
@@ -430,4 +432,3 @@ Then rebuild and push the image.
 ---
 
 > Not validated against a live Akash deployment. Test in staging before production use.
-# akash-postgres

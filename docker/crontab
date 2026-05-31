@@ -2,7 +2,7 @@ SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 # Full backup daily 02:00 UTC
-0 2 * * * postgres wal-g backup-push ${PGDATA} >> /var/log/wal-g-backup.log 2>&1
+0 2 * * * postgres PGHOST=/var/run/postgresql PGUSER=${POSTGRES_USER} PGDATABASE=${POSTGRES_DB} wal-g backup-push ${PGDATA} >> /var/log/wal-g-backup.log 2>&1
 
 # Retention: keep 7 full backups, weekly Sun 03:00 UTC
-0 3 * * 0 postgres wal-g delete retain FULL 7 --confirm >> /var/log/wal-g-backup.log 2>&1
+0 3 * * 0 postgres PGHOST=/var/run/postgresql PGUSER=${POSTGRES_USER} PGDATABASE=${POSTGRES_DB} wal-g delete retain FULL 7 --confirm >> /var/log/wal-g-backup.log 2>&1
